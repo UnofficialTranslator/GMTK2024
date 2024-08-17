@@ -21,6 +21,8 @@ namespace Unity.FPS.Gameplay
         public bool InvertXAxis = false;
 
         GameFlowManager m_GameFlowManager;
+        GameCameraManager m_CameraManager;
+        
         PlayerCharacterController m_PlayerCharacterController;
         bool m_FireInputWasHeld;
 
@@ -30,20 +32,24 @@ namespace Unity.FPS.Gameplay
             DebugUtility.HandleErrorIfNullGetComponent<PlayerCharacterController, PlayerInputHandler>(
                 m_PlayerCharacterController, this, gameObject);
             m_GameFlowManager = FindObjectOfType<GameFlowManager>();
+            m_CameraManager = FindObjectOfType<GameCameraManager>();
             DebugUtility.HandleErrorIfNullFindObject<GameFlowManager, PlayerInputHandler>(m_GameFlowManager, this);
 
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
         }
 
         void LateUpdate()
         {
             m_FireInputWasHeld = GetFireInputHeld();
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
         }
 
         public bool CanProcessInput()
         {
-            return Cursor.lockState == CursorLockMode.Locked && !m_GameFlowManager.GameIsEnding;
+            return false;
+            //return Cursor.lockState == CursorLockMode.Locked && !m_GameFlowManager.GameIsEnding;
         }
 
         public Vector3 GetMoveInput()
@@ -227,6 +233,7 @@ namespace Unity.FPS.Gameplay
 
             return 0;
         }
+
 
         float GetMouseOrStickLookAxis(string mouseInputName, string stickInputName)
         {
